@@ -10,12 +10,21 @@ spring:
                 locator:
                     enabled: true
             routes:
-            - id: toll-service
+            - id: toll-service-v1
               uri: lb://tollrate-service
               predicates:
               - Method=GET
-              - Path=/tollrate/{stationId}
-              - Query=apicaller
+              - Path=/v1/tollrate/{stationId}
+              filters:
+              - SetPath=/tollrate/{stationId}
+              - AddResponseHeader=X-Expiring-Service,please use v2
+            - id: toll-service-v2
+              uri: lb://tollrate-service
+              predicates:
+              - Method=GET
+              - Path=/v2/tollrate/{stationId}
+              filters:
+              - SetPath=/tollrateV2/{stationId}
 
 eureka:
     instance:
